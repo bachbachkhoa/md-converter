@@ -1,3 +1,12 @@
+---
+title: MD Converter
+emoji: 📄
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
+
 # md-converter
 
 Convert PDF, DOCX, XLSX, XLS, and PPTX files to Markdown — with a web UI for non-technical users and a CLI for scripting.
