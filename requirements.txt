@@ -1,0 +1,7 @@
+pdfplumber
+python-docx
+python-pptx
+openpyxl
+xlrd
+streamlit
+matplotlib
