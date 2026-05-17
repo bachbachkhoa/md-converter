@@ -97,7 +97,8 @@ def _render_shape(shape, title_el, assets: dict, img_n: list) -> list[str]:
         if shape.shape_type == pptx.enum.shapes.MSO_SHAPE_TYPE.PICTURE:
             img_n[0] += 1
             ext = shape.image.ext
-            filename = f"images/img{img_n[0]:03d}.{ext}"
+            safe_ext = ext if ext and ext.isalnum() and len(ext) <= 10 else "bin"
+            filename = f"images/img{img_n[0]:03d}.{safe_ext}"
             assets[filename] = shape.image.blob
             parts.append(f"![]({filename})")
             return parts

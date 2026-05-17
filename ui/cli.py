@@ -36,7 +36,11 @@ def main():
         if result.assets:
             output_dir = os.path.dirname(os.path.abspath(args.output))
             for asset_path, asset_bytes in result.assets.items():
-                full = os.path.join(output_dir, asset_path)
+                safe_parts = [p for p in asset_path.replace("\\", "/").split("/")
+                              if p and p != ".."]
+                if not safe_parts:
+                    continue
+                full = os.path.join(output_dir, *safe_parts)
                 os.makedirs(os.path.dirname(full), exist_ok=True)
                 with open(full, "wb") as f:
                     f.write(asset_bytes)
