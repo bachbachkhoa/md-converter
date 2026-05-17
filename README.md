@@ -33,6 +33,17 @@ Convert PDF, DOCX, XLSX, XLS, and PPTX files to Markdown — with a web UI for n
 
 ## Setup
 
+### Option 1 — Docker (recommended)
+
+```bash
+docker build -t md-converter .
+docker run -p 7860:7860 md-converter
+```
+
+Open `http://localhost:7860` in your browser.
+
+### Option 2 — Python venv
+
 ```bash
 # Create virtual environment
 python -m venv .venv
@@ -58,7 +69,7 @@ python -m venv .venv
 .venv/bin/streamlit run ui/streamlit_app.py
 ```
 
-Open `http://localhost:8501` in your browser, upload a file, and download the result.
+Open `http://localhost:8501` in your browser (or `http://localhost:7860` if running via Docker), upload a file, and download the result.
 
 ### CLI
 
