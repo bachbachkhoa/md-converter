@@ -49,6 +49,11 @@ def main():
             print(f"Saved to {args.output}")
     else:
         print(result.markdown)
+        if result.assets:
+            print(
+                f"Warning: {len(result.assets)} image(s) were not saved (use -o to write to a file)",
+                file=sys.stderr,
+            )
 
 
 if __name__ == "__main__":

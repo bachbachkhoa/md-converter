@@ -67,4 +67,46 @@ TEST_VECTORS = [
             "PDF-PAGE2-x0y1z2a3",
         ],
     ),
+    FileTestVector(
+        filename="test_xlsx_with_images.xlsx",
+        must_include=[
+            # Sheet heading still rendered
+            "## XLSX-IMG-SHEET-r1s2t3u4",
+            # Cell data preserved
+            "XLSX-IMG-ROW-BEFORE",
+            # Exact image reference — would fail if naming scheme regressed
+            "![XLSX-IMG-SHEET-r1s2t3u4_image_1.png](images/XLSX-IMG-SHEET-r1s2t3u4_image_1.png)",
+            # Image is anchored at A1 (row 0), so the image ref must appear BEFORE
+            # the table rows — this string would fail if ordering regressed back to
+            # appending all images after the table.
+            "![XLSX-IMG-SHEET-r1s2t3u4_image_1.png](images/XLSX-IMG-SHEET-r1s2t3u4_image_1.png)\n\n| XLSX-IMG-ROW-BEFORE",
+        ],
+    ),
+    FileTestVector(
+        filename="test_xlsx_with_wmf.xlsx",
+        must_include=[
+            # Sheet heading rendered
+            "## XLSX-WMF-SHEET-v5w6x7y8",
+            # Cell data preserved — would fail if sheet content was lost
+            "XLSX-WMF-ROW-BEFORE",
+            # WMF skip comment must appear — would fail if unsupported image was silently ignored
+            "<!-- image skipped: unsupported format (wmf) -->",
+        ],
+        must_not_include=[
+            # No broken image reference must be emitted for unsupported formats
+            "![",
+        ],
+    ),
+    FileTestVector(
+        filename="test_xlsx_with_multiple_images.xlsx",
+        must_include=[
+            "## XLSX-MULTI-SHEET-a1b2c3d4",
+            # All data rows preserved
+            "XLSX-MULTI-ROW-A",
+            "XLSX-MULTI-ROW-D",
+            # Both image refs present — would fail if counter reset or second image dropped
+            "![XLSX-MULTI-SHEET-a1b2c3d4_image_1.png](images/XLSX-MULTI-SHEET-a1b2c3d4_image_1.png)",
+            "![XLSX-MULTI-SHEET-a1b2c3d4_image_2.png](images/XLSX-MULTI-SHEET-a1b2c3d4_image_2.png)",
+        ],
+    ),
 ]

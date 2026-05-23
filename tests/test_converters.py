@@ -128,3 +128,40 @@ def test_pptx_title_rendered_as_heading(facade: ConverterFacade):
     assert "PPTX-TITLE-d0e1f2g3\n" not in result.markdown.replace("# PPTX-TITLE-d0e1f2g3", ""), (
         "Title text appeared without # prefix — heading detection failed."
     )
+
+
+# ---------------------------------------------------------------------------
+# Regression: XLSX image extraction
+# ---------------------------------------------------------------------------
+
+def test_xlsx_image_assets_populated(facade: ConverterFacade):
+    """Regression: embedded PNG must appear in result.assets under the exact expected key.
+
+    Checks the asset key independently of the Markdown reference so that a naming
+    regression is caught even if the ![]() syntax is wrong but the key is right,
+    or vice versa.
+    """
+    path = os.path.join(TEST_FILES_DIR, "test_xlsx_with_images.xlsx")
+    result = facade.convert(path)
+    expected_key = "images/XLSX-IMG-SHEET-r1s2t3u4_image_1.png"
+    assert expected_key in result.assets, (
+        f"Expected asset key {expected_key!r} not found in result.assets. "
+        "Check that ws._images is populated and image._data() succeeds."
+    )
+
+
+def test_xlsx_multiple_images_both_assets_present(facade: ConverterFacade):
+    """Regression: two images on one sheet must produce two distinct asset keys.
+
+    Would fail if the per-sheet counter reset between images, if the second
+    image was dropped, or if both images were written under the same key.
+    """
+    path = os.path.join(TEST_FILES_DIR, "test_xlsx_with_multiple_images.xlsx")
+    result = facade.convert(path)
+    key1 = "images/XLSX-MULTI-SHEET-a1b2c3d4_image_1.png"
+    key2 = "images/XLSX-MULTI-SHEET-a1b2c3d4_image_2.png"
+    assert key1 in result.assets, f"First image asset {key1!r} missing from result.assets"
+    assert key2 in result.assets, f"Second image asset {key2!r} missing from result.assets"
+    assert len(result.assets) == 2, (
+        f"Expected exactly 2 assets, got {len(result.assets)}: {list(result.assets)}"
+    )
